@@ -9,5 +9,8 @@
             "email": "gabriel@somoza.me"
         }
     ],
-    "require": {}
+    "require": {
+        "react/http": "^0.8.4",
+        "symfony/process": "^4.0"
+    }
 }
