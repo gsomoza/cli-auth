@@ -1,23 +1,23 @@
 {
-    "name": "somoza/cli-auth",
-    "description": "Quickly add OAuth2 authentication to your terminal app",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Gabriel Somoza",
-            "email": "gabriel@somoza.me"
-        }
-    ],
-    "require": {
-        "react/http": "^0.8.4",
-        "symfony/process": "^4.0",
-      "react/promise": "^2.7",
-      "webmozart/assert": "^1.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "Somoza\\CliAuth\\": "src/"
-        }
+  "name": "somoza/cli-auth",
+  "description": "Quickly add OAuth2 authentication to your terminal app",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gabriel Somoza",
+      "email": "gabriel@somoza.me"
     }
+  ],
+  "require": {
+    "react/http": "^0.8.4",
+    "react/promise": "^2.7",
+    "react/child-process": "^0.6.1",
+    "webmozart/assert": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Somoza\\CliAuth\\": "src/"
+    }
+  }
 }

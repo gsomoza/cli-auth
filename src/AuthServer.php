@@ -93,9 +93,8 @@ final class AuthServer
         // open the browser on the default page once the server started
         $loop->futureTick(
             function () {
-                $open = new OpenProcessFactory();
                 $url = "http://127.0.0.1:{$this->port}/";
-                $open->create([$url])->run();
+                (new OpenProcessFactory())->run([$url]);
             }
         );
 

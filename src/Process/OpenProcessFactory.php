@@ -3,27 +3,31 @@ declare(strict_types=1);
 
 namespace Somoza\CliAuth\Process;
 
-use Symfony\Component\Process\Process;
+use React\ChildProcess\Process;
+use React\EventLoop\Factory;
 use Webmozart\Assert\Assert;
 
+/**
+ * Uses the system's "open" or "start" command depending on the current operating system
+ */
 final class OpenProcessFactory
 {
     /** @var string */
     private $command;
 
+    /**
+     * OpenProcessFactory constructor.
+     */
     public function __construct()
     {
-        $this->command = \strtolower(\substr(\php_uname('s'), 0, 3)) === 'win'
-            ? 'start'
-            : 'open';
+        $this->command = $this->isWindows() ? 'start' : 'open';
     }
 
     /**
-     * @param array $openArgs
-     * @param array ...$processArgs
-     * @return Process
+     * @param string[] $openArgs Each of the arguments to be passed to the "start" or "open" command
+     * @return void
      */
-    public function create(array $openArgs, array ...$processArgs): Process
+    public function run(array $openArgs): void
     {
         Assert::minCount($openArgs, 1);
         Assert::allString($openArgs);
@@ -31,6 +35,20 @@ final class OpenProcessFactory
         \array_unshift($openArgs, $this->command);
         $command = \implode(' ', $openArgs);
 
-        return new Process($command, ...$processArgs);
+        $loop = Factory::create();
+        $process = new Process($command, null, null, []);
+        $process->start($loop);
+
+        return;
+    }
+
+    /**
+     * Detects whether we're running on Windows or not
+     *
+     * @return bool
+     */
+    private function isWindows(): bool
+    {
+        return \strtolower(\substr(\php_uname('s'), 0, 3)) === 'win';
     }
 }
