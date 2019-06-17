@@ -37,7 +37,6 @@ final class TransferHandler
     public function __invoke(ServerRequestInterface $request, callable $next)
     {
         $path = $request->getUri()->getPath();
-        echo $path;
         if ($path === self::URI_TRANSFER && $request->getMethod() === 'POST') {
             $response = new Response(200, ['Content-Type' => 'text/html'], 'You can now close this window.');
             $this->deferred->resolve(new AuthenticationResult($request, $response));

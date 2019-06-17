@@ -12,7 +12,8 @@ use React\EventLoop\Factory as ReactFactory;
 use React\Http\Server as ReactServer;
 use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
-use Somoza\CliAuth\Middleware\DefaultHandler;
+use React\Socket\Server;
+use Somoza\CliAuth\Middleware\FileHandler;
 use Somoza\CliAuth\Middleware\TransferHandler;
 use Somoza\CliAuth\Process\OpenProcessFactory;
 
@@ -32,7 +33,7 @@ use Somoza\CliAuth\Process\OpenProcessFactory;
  *
  * @package Somoza\CliAuth
  */
-final class Server
+final class AuthServer
 {
     const DEFAULT_PORT = 8123;
 
@@ -44,23 +45,40 @@ final class Server
 
     /**
      * @param int $port Port the server will listen to (default: 8123)
-     * @param array|null $middleware Custom middleware. It will be wrapped with the server's own middleware, resulting
-     *                               in a middleware stack as follows:
-     *                                 * TransferHandle
-     *                                 * $middleware (flattened)
-     *                                 * Default handler
+     * @param array|null $middleware Middleware stack. TransferHandler middleware will always be prepended
      */
-    public function __construct(int $port = null, array $middleware = [])
+    private function __construct(array $middleware = [], int $port = null)
     {
+        $this->middleware = array_map(
+            function (callable $i) {
+                return $i;
+            },
+            $middleware
+        );
+
         if (null === $port) {
             $port = self::DEFAULT_PORT;
         }
         $this->port = $port;
+    }
 
-        // type-hint for callable
-        $this->middleware = \array_map(function (callable $middleware) {
-            return $middleware;
-        },$middleware);
+    /**
+     * @param string $filePath
+     * @param int|null $port
+     * @return AuthServer
+     */
+    public static function fromFile(string $filePath, int $port = null): AuthServer
+    {
+        return new static([new FileHandler($filePath)], $port);
+    }
+
+    /**
+     * @param int|null $port
+     * @return AuthServer
+     */
+    public static function demo(int $port = null): AuthServer
+    {
+        return new static([new FileHandler()], $port);
     }
 
     /**
@@ -82,25 +100,30 @@ final class Server
         );
 
         $promise = $deferred->promise();
-
         // always stop the loop once the promise is resolved or rejected
-        $promise->always(function () use ($loop) {
-            $loop->futureTick(function () use ($loop) { // do it on next tick to allow serving the response
-                $loop->stop();
-            });
-        });
+        $promise->always(
+            function () use ($loop) {
+                $loop->futureTick(
+                    function () use ($loop) { // do it on next tick to allow serving the response
+                        $loop->stop();
+                    }
+                );
+            }
+        );
 
-        // add required middleware to the beginning and end of the custom middleware stack
+        // add required middleware to the beginning of the custom middleware stack
         $middleware = $this->middleware;
         \array_unshift($middleware, new TransferHandler($deferred));
-        $middleware []= new DefaultHandler();
 
         // start the server
         $server = new ReactServer($middleware);
-        $server->on('error', function (\Exception $e) use ($deferred) {
-            $deferred->reject($e);
-        });
-        $socket = new \React\Socket\Server($this->port, $loop);
+        $server->on(
+            'error',
+            function (\Exception $e) use ($deferred) {
+                $deferred->reject($e);
+            }
+        );
+        $socket = new Server($this->port, $loop);
         $server->listen($socket);
         $loop->run();
 
