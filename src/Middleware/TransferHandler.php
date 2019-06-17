@@ -39,11 +39,8 @@ final class TransferHandler
         $path = $request->getUri()->getPath();
         echo $path;
         if ($path === self::URI_TRANSFER && $request->getMethod() === 'POST') {
-            echo 'About to create response';
             $response = new Response(200, ['Content-Type' => 'text/html'], 'You can now close this window.');
-            echo 'About to resolve';
             $this->deferred->resolve(new AuthenticationResult($request, $response));
-            echo 'About to return response';
             return $response;
         }
 
