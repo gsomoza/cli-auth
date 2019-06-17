@@ -10,7 +10,7 @@ use React\Http\Response;
 
 final class DefaultHandler
 {
-    const DEFAULT_SOURCE = __DIR__.'/../../server/index.html';
+    const DEFAULT_SOURCE = __DIR__.'/../../pub/index.html';
 
     /** @var string */
     private $sourcePath;
@@ -26,7 +26,7 @@ final class DefaultHandler
         $this->sourcePath = $sourcePath;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $body = file_get_contents($this->sourcePath);
 

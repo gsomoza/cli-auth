@@ -6,7 +6,7 @@ namespace Somoza\CliAuth;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class ResolveResult
+final class AuthenticationResult
 {
     /** @var ServerRequestInterface */
     private $request;

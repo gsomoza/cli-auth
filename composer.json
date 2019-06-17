@@ -1,5 +1,5 @@
 {
-    "name": "gsomoza/cli-auth",
+    "name": "somoza/cli-auth",
     "description": "Quickly add OAuth2 authentication to your terminal app",
     "type": "library",
     "license": "MIT",
@@ -11,7 +11,8 @@
     ],
     "require": {
         "react/http": "^0.8.4",
-        "symfony/process": "^4.0"
+        "symfony/process": "^4.0",
+        "react/promise": "^2.7"
     },
     "autoload": {
         "psr-4": {

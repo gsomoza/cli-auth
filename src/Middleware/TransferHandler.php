@@ -6,7 +6,7 @@ namespace Somoza\CliAuth\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
 use React\Promise\Deferred;
-use Somoza\CliAuth\ResolveResult;
+use Somoza\CliAuth\AuthenticationResult;
 
 /**
  * Handles POST /transfer by resolving a Deferred instance with the value of the request. This allows clients
@@ -37,10 +37,13 @@ final class TransferHandler
     public function __invoke(ServerRequestInterface $request, callable $next)
     {
         $path = $request->getUri()->getPath();
+        echo $path;
         if ($path === self::URI_TRANSFER && $request->getMethod() === 'POST') {
+            echo 'About to create response';
             $response = new Response(200, ['Content-Type' => 'text/html'], 'You can now close this window.');
-            $this->deferred->resolve(new ResolveResult($request, $response));
-
+            echo 'About to resolve';
+            $this->deferred->resolve(new AuthenticationResult($request, $response));
+            echo 'About to return response';
             return $response;
         }
 
