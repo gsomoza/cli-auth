@@ -1,0 +1,13 @@
+{
+    "name": "gsomoza/cli-auth",
+    "description": "Quickly add OAuth2 authentication to your terminal app",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gabriel Somoza",
+            "email": "gabriel@somoza.me"
+        }
+    ],
+    "require": {}
+}
