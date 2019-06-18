@@ -3,11 +3,6 @@ declare(strict_types=1);
 
 namespace Somoza\CliAuth;
 
-// @TODO: why do we need to manually do this or else we get an exception!?
-include __DIR__.'/../vendor/ringcentral/psr7/src/functions_include.php';
-include __DIR__.'/../vendor/react/promise/src/functions_include.php';
-include __DIR__.'/../vendor/react/promise-stream/src/functions_include.php';
-
 use React\EventLoop\Factory as ReactFactory;
 use React\Http\Server as ReactServer;
 use React\Promise\Deferred;
