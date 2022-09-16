@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "react/http": "^0.8.4",
+        "react/http": "^0.8.4 || ^1.0.0",
         "react/promise": "^2.7",
         "react/child-process": "^0.6.1",
         "webmozart/assert": "^1.4"
